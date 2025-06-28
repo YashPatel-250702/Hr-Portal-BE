@@ -1,7 +1,9 @@
 package com.tekworks.employee.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +19,9 @@ public interface AttendenceLogsRepository extends JpaRepository<AttendenceLogs, 
 	AttendenceLogs findTopByEmployeeOrderByTimestampDesc(Employee employee);
 	@Query("SELECT a FROM AttendenceLogs a WHERE createdAt = :date")
 	List<AttendenceLogs> findByDate(@Param("date") LocalDate date);
+	
+	Optional<AttendenceLogs> findTopByEmployeeAndTimestampBetweenOrderByTimestampDesc(
+		    Employee employee, LocalDateTime start, LocalDateTime end
+		);
 
 }

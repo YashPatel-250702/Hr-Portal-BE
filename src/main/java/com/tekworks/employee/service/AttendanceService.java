@@ -3,10 +3,12 @@ package com.tekworks.employee.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,6 @@ public class AttendanceService {
     public AttendenceLogs checkOut(String employeeId) throws CustomException {
         return saveLog(employeeId, EventType.CHECK_OUT);
     }
-
     private AttendenceLogs saveLog(String employeeId, EventType type) throws CustomException {
         Employee emp = employeeRepo.findById(employeeId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND.value(),"Employee not found"));
