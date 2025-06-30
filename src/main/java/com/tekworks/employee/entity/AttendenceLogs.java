@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tekworks.employee.enums.EventType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 
@@ -32,8 +34,9 @@ public class AttendenceLogs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "employee_id", referencedColumnName = "employeeId", nullable = false)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.EAGER, optional = false,cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id", referencedColumnName = "employeeId", nullable = false )
     @JsonIgnore
     private Employee employee;
 

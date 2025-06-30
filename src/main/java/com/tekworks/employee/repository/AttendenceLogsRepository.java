@@ -16,7 +16,10 @@ public interface AttendenceLogsRepository extends JpaRepository<AttendenceLogs, 
 
 	@Query(value = "SELECT * FROM attendence_logs WHERE employee_id  = :empId ORDER BY timestamp ASC", nativeQuery = true)
 	List<AttendenceLogs> findByEmployee(@Param("empId") String empId);
-	AttendenceLogs findTopByEmployeeOrderByTimestampDesc(Employee employee);
+	
+	Optional<AttendenceLogs> findTopByEmployeeAndCreatedAtOrderByTimestampDesc(Employee employee, LocalDate date);
+
+	
 	@Query("SELECT a FROM AttendenceLogs a WHERE createdAt = :date")
 	List<AttendenceLogs> findByDate(@Param("date") LocalDate date);
 	

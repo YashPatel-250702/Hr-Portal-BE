@@ -37,27 +37,32 @@ public class AttendanceService {
             return saveLog(employeeId, EventType.CHECK_IN);
     }
 
+    
     public AttendenceLogs checkOut(String employeeId) throws CustomException {
         return saveLog(employeeId, EventType.CHECK_OUT);
     }
+    
+    
     private AttendenceLogs saveLog(String employeeId, EventType type) throws CustomException {
         Employee emp = employeeRepo.findById(employeeId)
-                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND.value(),"Employee not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND.value(), "Employee not found"));
 
-        AttendenceLogs topByEmployeeIdOrderByTimestampDesc = attendanceRepo.findTopByEmployeeOrderByTimestampDesc(emp);
-        
-        if(topByEmployeeIdOrderByTimestampDesc!=null&&topByEmployeeIdOrderByTimestampDesc.getEventType().equals(type)) {
-        	throw new CustomException(HttpStatus.BAD_REQUEST.value(), "Employee Already "+type);
+        LocalDate today = LocalDate.now();
+
+        Optional<AttendenceLogs> todayLogOpt = attendanceRepo
+                .findTopByEmployeeAndCreatedAtOrderByTimestampDesc(emp, today);
+
+        if (todayLogOpt.isPresent() && todayLogOpt.get().getEventType().equals(type)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST.value(), "Employee already " + type + " today");
         }
+
         AttendenceLogs log = new AttendenceLogs();
         log.setEmployee(emp);
         log.setEventType(type);
         log.setTimestamp(LocalDateTime.now());
-        log.setCreatedAt(LocalDate.now());
-        
+        log.setCreatedAt(today);
 
         return attendanceRepo.save(log);
-        
     }
 
     public List<AttendanceDaySummaryDTO> getEmployeeFullAttendance(String empId) throws CustomException {
